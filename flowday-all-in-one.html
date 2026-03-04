@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowDay - 你的智能效率伙伴</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-primary: #f8f9fb;
+    --bg-card: #ffffff;
+    --bg-sidebar: #1a1d23;
+    --bg-sidebar-hover: #2a2d35;
+    --bg-sidebar-active: #3a3d45;
+    --text-primary: #1a1d23;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    --text-sidebar: #9ca3af;
+    --text-sidebar-active: #ffffff;
+    --accent: #6366f1;
+    --accent-light: #eef2ff;
+    --accent-hover: #4f46e5;
+    --green: #10b981;
+    --green-light: #ecfdf5;
+    --orange: #f59e0b;
+    --orange-light: #fffbeb;
+    --red: #ef4444;
+    --red-light: #fef2f2;
+    --blue: #3b82f6;
+    --blue-light: #eff6ff;
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --sidebar-width: 240px;
+    --topbar-height: 64px;
+    --transition: 0.2s ease;
+}
+[data-theme="dark"] {
+    --bg-primary: #0f1117;
+    --bg-card: #1a1d27;
+    --bg-sidebar: #0a0c10;
+    --bg-sidebar-hover: #1a1d27;
+    --bg-sidebar-active: #252830;
+    --text-primary: #f0f1f3;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
+    --text-sidebar: #6b7280;
+    --text-sidebar-active: #ffffff;
+    --accent: #818cf8;
+    --accent-light: #1e1b4b;
+    --accent-hover: #6366f1;
+    --border: #2a2d35;
+    --border-light: #1f2129;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-lg: 0 4px 12px rgba(0,0,0,0.4);
+    --green-light: #052e16;
+    --blue-light: #172554;
+    --orange-light: #422006;
+    --red-light: #450a0a;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    transition: transform var(--transition);
+}
+.sidebar-header { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon { font-size: 22px; color: var(--accent); }
+.logo-text { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+.nav-list { list-style: none; padding: 12px 12px; flex: 1; }
+.nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: var(--radius-sm);
+    cursor: pointer; color: var(--text-sidebar);
+    font-size: 14px; font-weight: 500;
+    transition: all var(--transition); margin-bottom: 2px;
+}
+.nav-item:hover { background: var(--bg-sidebar-hover); color: var(--text-sidebar-active); }
+.nav-item.active { background: var(--bg-sidebar-active); color: var(--text-sidebar-active); }
+.nav-icon { font-size: 18px; width: 24px; text-align: center; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+.user-profile { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+.user-info { display: flex; flex-direction: column; }
+.user-name { color: #fff; font-size: 13px; font-weight: 500; }
+.user-plan { color: var(--accent); font-size: 11px; font-weight: 500; }
+.main-content { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; }
+.topbar {
+    height: var(--topbar-height); padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg-primary); border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.page-title { font-size: 18px; font-weight: 600; }
+.date-display { font-size: 13px; color: var(--text-secondary); }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.btn-icon {
+    width: 38px; height: 38px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); background: var(--bg-card);
+    cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition); position: relative;
+}
+.btn-icon:hover { background: var(--border-light); border-color: var(--text-tertiary); }
+.menu-toggle { display: none; width: 38px; height: 38px; border: none; background: none; font-size: 20px; cursor: pointer; color: var(--text-primary); }
+.page { display: none; padding: 24px 32px; max-width: 1200px; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+    box-shadow: var(--shadow-sm); transition: box-shadow var(--transition);
+}
+.card:hover { box-shadow: var(--shadow); }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-header h3 { font-size: 15px; font-weight: 600; }
+.briefing-card {
+    background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+    border-radius: var(--radius); padding: 28px 32px; color: #fff; margin-bottom: 20px;
+}
+.briefing-greeting { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.briefing-summary { font-size: 14px; opacity: 0.9; }
+.briefing-summary strong { font-weight: 600; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.task-list { display: flex; flex-direction: column; gap: 8px; }
+.task-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-light); transition: all var(--transition);
+}
+.task-item:hover { border-color: var(--border); background: var(--border-light); }
+.task-check { position: relative; cursor: pointer; display: flex; }
+.task-check input { display: none; }
+.checkmark {
+    width: 20px; height: 20px; border: 2px solid var(--border);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition); flex-shrink: 0;
+}
+.task-check input:checked + .checkmark { background: var(--green); border-color: var(--green); }
+.task-check input:checked + .checkmark::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; }
+.task-check input:checked ~ .task-content .task-title { text-decoration: line-through; color: var(--text-tertiary); }
+.task-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.task-title { font-size: 14px; font-weight: 500; }
+.task-meta { font-size: 12px; color: var(--text-tertiary); }
+.task-tag { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+.tag-work { background: var(--accent-light); color: var(--accent); }
+.tag-health { background: var(--green-light); color: var(--green); }
+.tag-personal { background: var(--orange-light); color: var(--orange); }
+.badge { font-size: 11px; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 20px; font-weight: 600; margin-left: 8px; }
+.timeline { position: relative; padding-left: 20px; }
+.timeline::before { content: ''; position: absolute; left: 54px; top: 12px; bottom: 12px; width: 2px; background: var(--border); }
+.timeline-item { display: flex; align-items: flex-start; gap: 16px; padding: 10px 0; position: relative; }
+.timeline-time { font-size: 13px; font-weight: 500; color: var(--text-secondary); width: 40px; flex-shrink: 0; }
+.timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); border: 2px solid var(--bg-card); flex-shrink: 0; margin-top: 4px; position: relative; z-index: 1; }
+.timeline-item.current .timeline-dot { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
+.timeline-content { flex: 1; }
+.timeline-title { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+.timeline-desc { font-size: 12px; color: var(--text-tertiary); }
+.health-stats { display: flex; justify-content: space-around; padding: 8px 0; }
+.stat-ring { position: relative; width: 100px; height: 100px; }
+.stat-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: var(--border-light); stroke-width: 6; }
+.ring-fill { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 264; stroke-dashoffset: calc(264 - (264 * var(--progress)) / 100); transition: stroke-dashoffset 1s ease; }
+.ring-green { stroke: var(--green); }
+.ring-orange { stroke: var(--orange); }
+.stat-ring-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.stat-value { display: block; font-size: 16px; font-weight: 700; line-height: 1.2; }
+.stat-name { font-size: 11px; color: var(--text-tertiary); }
+.goal-list-mini { display: flex; flex-direction: column; gap: 14px; }
+.goal-mini-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 6px; }
+.goal-percent { font-weight: 600; color: var(--accent); font-size: 13px; }
+.progress-bar { height: 6px; background: var(--border-light); border-radius: 3px; overflow: hidden; }
+.progress-bar-lg { height: 8px; border-radius: 4px; margin-bottom: 20px; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: inherit; transition: width 1s ease; }
+.fill-blue { background: var(--blue); }
+.fill-green { background: var(--green); }
+.page-header-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.section-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.section-desc { font-size: 13px; color: var(--text-secondary); }
+.btn-primary { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; transition: all var(--transition); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: var(--accent-light); color: var(--accent); border: none; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; transition: all var(--transition); }
+.btn-secondary:hover { background: var(--accent); color: #fff; }
+.btn-ghost { background: none; border: 1px solid var(--border); color: var(--text-secondary); padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; transition: all var(--transition); }
+.btn-ghost:hover { background: var(--border-light); }
+.btn-text { background: none; border: none; color: var(--accent); font-size: 13px; font-weight: 500; cursor: pointer; padding: 0; }
+.btn-text:hover { color: var(--accent-hover); }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+.input-card { margin-bottom: 16px; }
+.smart-input { display: flex; align-items: center; gap: 12px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px 4px 4px 16px; }
+.input-icon { font-size: 20px; flex-shrink: 0; }
+.smart-input-field { flex: 1; border: none; background: none; font-size: 14px; padding: 10px 0; color: var(--text-primary); outline: none; font-family: inherit; }
+.smart-input-field::placeholder { color: var(--text-tertiary); }
+.btn-send { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background var(--transition); }
+.btn-send:hover { background: var(--accent-hover); }
+.ai-suggestion { margin-top: 12px; padding: 16px; background: var(--accent-light); border-radius: var(--radius-sm); border: 1px solid rgba(99,102,241,0.2); }
+.suggestion-header { margin-bottom: 10px; }
+.ai-badge { font-size: 12px; font-weight: 600; color: var(--accent); background: rgba(99,102,241,0.1); padding: 4px 10px; border-radius: 20px; }
+.auto-badge { font-size: 11px; color: var(--text-tertiary); background: var(--border-light); padding: 3px 10px; border-radius: 20px; }
+.suggestion-content { font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+.suggestion-actions { display: flex; gap: 8px; }
+.calendar-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; min-height: 280px; }
+.calendar-day { border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 10px; min-height: 120px; transition: all var(--transition); }
+.calendar-day:hover { border-color: var(--border); }
+.calendar-day.today { border-color: var(--accent); background: var(--accent-light); }
+.calendar-day-header { font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; text-transform: uppercase; font-weight: 600; }
+.calendar-day-num { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.calendar-event { font-size: 11px; padding: 3px 6px; border-radius: 4px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.event-work { background: var(--accent-light); color: var(--accent); }
+.event-health { background: var(--green-light); color: var(--green); }
+.event-personal { background: var(--orange-light); color: var(--orange); }
+.briefing-content { display: flex; flex-direction: column; gap: 12px; }
+.briefing-item { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.5; padding: 10px 12px; background: var(--bg-primary); border-radius: var(--radius-sm); }
+.briefing-icon { font-size: 18px; flex-shrink: 0; }
+.view-toggle { display: flex; background: var(--bg-primary); border-radius: 6px; padding: 2px; border: 1px solid var(--border); }
+.view-btn { border: none; background: none; padding: 5px 12px; font-size: 12px; font-weight: 500; border-radius: 4px; cursor: pointer; color: var(--text-secondary); transition: all var(--transition); }
+.view-btn.active { background: var(--bg-card); color: var(--text-primary); box-shadow: var(--shadow-sm); }
+.health-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.health-metric-card { display: flex; align-items: center; gap: 14px; padding: 18px; }
+.metric-icon { font-size: 28px; }
+.metric-info { display: flex; flex-direction: column; gap: 2px; }
+.metric-label { font-size: 12px; color: var(--text-tertiary); }
+.metric-value { font-size: 20px; font-weight: 700; }
+.metric-change { font-size: 11px; font-weight: 500; }
+.metric-change.positive { color: var(--green); }
+.metric-change.neutral { color: var(--text-tertiary); }
+.metric-change.negative { color: var(--red); }
+.chart-container { padding: 8px 0; }
+.bar-chart { display: flex; align-items: flex-end; justify-content: space-around; height: 200px; padding: 0 20px; }
+.bar-group { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+.bar { width: 36px; background: var(--accent); border-radius: 6px 6px 0 0; position: relative; transition: height 0.5s ease; opacity: 0.7; }
+.bar:hover { opacity: 1; }
+.bar-accent { background: var(--accent); opacity: 1; }
+.bar-green { background: var(--green); opacity: 0.8; }
+.bar-value { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+.bar-label { font-size: 12px; color: var(--text-tertiary); font-weight: 500; }
+.ai-report { display: flex; flex-direction: column; gap: 16px; }
+.report-section h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.report-section ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.report-section li { font-size: 13px; line-height: 1.5; color: var(--text-secondary); padding-left: 16px; position: relative; }
+.report-section li::before { content: '·'; position: absolute; left: 4px; font-weight: 700; color: var(--text-tertiary); }
+.goals-container { display: flex; flex-direction: column; gap: 16px; }
+.goal-card { padding: 24px; }
+.goal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.goal-title-row { display: flex; gap: 14px; align-items: flex-start; }
+.goal-emoji { font-size: 28px; line-height: 1; }
+.goal-title-row h4 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.goal-deadline { font-size: 12px; color: var(--text-tertiary); }
+.goal-progress-badge { background: var(--accent); color: #fff; font-size: 16px; font-weight: 700; padding: 6px 14px; border-radius: 20px; flex-shrink: 0; }
+.badge-blue { background: var(--blue); }
+.badge-green { background: var(--green); }
+.milestones { display: flex; flex-direction: column; gap: 4px; position: relative; padding-left: 2px; }
+.milestone { display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; position: relative; }
+.milestone:not(:last-child)::after { content: ''; position: absolute; left: 9px; top: 30px; bottom: -10px; width: 2px; background: var(--border); }
+.milestone.completed:not(:last-child)::after { background: var(--green); }
+.milestone-marker { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; position: relative; z-index: 1; color: var(--text-tertiary); }
+.milestone.completed .milestone-marker { color: var(--green); font-size: 13px; font-weight: 700; }
+.milestone.active .milestone-marker { color: var(--accent); }
+.milestone-info { display: flex; flex-direction: column; gap: 2px; }
+.milestone-name { font-size: 14px; font-weight: 500; }
+.milestone.completed .milestone-name { color: var(--text-tertiary); }
+.milestone-date { font-size: 12px; color: var(--text-tertiary); }
+.milestone-tasks { margin-top: 8px; margin-left: 34px; display: flex; flex-direction: column; gap: 4px; }
+.mini-task { font-size: 13px; color: var(--text-secondary); padding: 4px 0; }
+.mini-task.done { color: var(--text-tertiary); }
+.mini-task.current { color: var(--accent); font-weight: 500; }
+.focus-container { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+.focus-main { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); min-height: 480px; }
+.focus-status { font-size: 14px; font-weight: 500; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+.focus-timer { font-size: 80px; font-weight: 700; letter-spacing: -2px; color: var(--text-primary); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+.focus-task-display { font-size: 15px; color: var(--text-secondary); margin-bottom: 32px; }
+.focus-controls { display: flex; gap: 12px; margin-bottom: 32px; }
+.btn-focus-ctrl { padding: 12px 32px; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; transition: all var(--transition); border: none; background: var(--accent); color: #fff; }
+.btn-focus-ctrl:hover { background: var(--accent-hover); }
+.btn-focus-ctrl.btn-outline { background: none; border: 1px solid var(--border); color: var(--text-secondary); }
+.btn-focus-ctrl.btn-outline:hover { background: var(--border-light); }
+.btn-focus-ctrl.btn-pause { background: var(--orange); }
+.focus-presets { display: flex; gap: 8px; }
+.preset-btn { padding: 6px 16px; border: 1px solid var(--border); border-radius: 20px; background: none; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all var(--transition); }
+.preset-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.preset-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+.focus-sidebar .card { margin-bottom: 12px; }
+.focus-task-list { display: flex; flex-direction: column; gap: 6px; }
+.focus-task-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition); border: 1px solid transparent; }
+.focus-task-item:hover { background: var(--border-light); border-color: var(--border); }
+.focus-task-item.selected { background: var(--accent-light); border-color: var(--accent); }
+.focus-task-name { font-size: 13px; font-weight: 500; }
+.focus-stats { display: flex; justify-content: space-around; text-align: center; }
+.focus-stat { display: flex; flex-direction: column; gap: 2px; }
+.focus-stat-value { font-size: 22px; font-weight: 700; color: var(--accent); }
+.focus-stat-label { font-size: 11px; color: var(--text-tertiary); }
+.ai-card { border-left: 3px solid var(--accent); }
+.ai-tip { font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 200; animation: fadeIn 0.2s ease; backdrop-filter: blur(4px); }
+.modal { background: var(--bg-card); border-radius: var(--radius); width: 90%; max-width: 520px; box-shadow: var(--shadow-lg); animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+.modal-header h3 { font-size: 16px; font-weight: 600; }
+.modal-close { width: 32px; height: 32px; border: none; background: none; font-size: 20px; cursor: pointer; color: var(--text-tertiary); border-radius: 6px; transition: all var(--transition); }
+.modal-close:hover { background: var(--border-light); color: var(--text-primary); }
+.modal-body { padding: 20px 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-secondary); }
+.form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; color: var(--text-primary); background: var(--bg-primary); outline: none; transition: border-color var(--transition); }
+.form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+.form-textarea { min-height: 80px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ai-decompose { margin-top: 16px; padding: 16px; background: var(--accent-light); border-radius: var(--radius-sm); border: 1px solid rgba(99,102,241,0.2); }
+.notif-panel { position: fixed; top: var(--topbar-height); right: 24px; width: 360px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-lg); z-index: 150; animation: slideUp 0.2s ease; }
+.notif-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.notif-header h3 { font-size: 15px; font-weight: 600; }
+.notif-list { max-height: 360px; overflow-y: auto; }
+.notif-item { display: flex; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border-light); transition: background var(--transition); }
+.notif-item:hover { background: var(--border-light); }
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; margin-top: 6px; }
+.notif-item.unread .notif-dot { background: var(--accent); }
+.notif-content { flex: 1; }
+.notif-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.notif-desc { font-size: 13px; color: var(--text-secondary); }
+.notif-time { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
+.hidden { display: none !important; }
+@media (max-width: 1024px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .health-grid { grid-template-columns: repeat(2, 1fr); }
+    .focus-container { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; }
+    .menu-toggle { display: flex; align-items: center; justify-content: center; }
+    .topbar { padding: 0 16px; }
+    .page { padding: 16px; }
+    .health-grid { grid-template-columns: 1fr; }
+    .calendar-week { grid-template-columns: repeat(3, 1fr); }
+    .focus-timer { font-size: 56px; }
+    .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">◆</span>
+                <span class="logo-text">FlowDay</span>
+            </div>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item active" data-page="dashboard">
+                <span class="nav-icon">⊞</span>
+                <span class="nav-label">今日概览</span>
+            </li>
+            <li class="nav-item" data-page="schedule">
+                <span class="nav-icon">▦</span>
+                <span class="nav-label">智能日程</span>
+            </li>
+            <li class="nav-item" data-page="health">
+                <span class="nav-icon">♡</span>
+                <span class="nav-label">健康习惯</span>
+            </li>
+            <li class="nav-item" data-page="goals">
+                <span class="nav-icon">◎</span>
+                <span class="nav-label">目标引擎</span>
+            </li>
+            <li class="nav-item" data-page="focus">
+                <span class="nav-icon">◉</span>
+                <span class="nav-label">专注模式</span>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">U</div>
+                <div class="user-info">
+                    <span class="user-name">用户</span>
+                    <span class="user-plan">Pro 会员</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="topbar-left">
+                <h2 class="page-title" id="pageTitle">今日概览</h2>
+                <span class="date-display" id="dateDisplay"></span>
+            </div>
+            <div class="topbar-right">
+                <button class="btn-icon" id="notifBtn" title="通知">🔔</button>
+                <button class="btn-icon" id="themeToggle" title="切换主题">◐</button>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <section class="page active" id="page-dashboard">
+            <div class="briefing-card">
+                <div class="briefing-greeting" id="greeting"></div>
+                <div class="briefing-summary">
+                    今天有 <strong>5</strong> 项待办，<strong>2</strong> 个会议，目标完成度 <strong>73%</strong>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="card priority-tasks">
+                    <div class="card-header"><h3>今日重点 <span class="badge">TOP 3</span></h3></div>
+                    <div class="task-list" id="topTasks">
+                        <div class="task-item priority-high">
+                            <label class="task-check"><input type="checkbox"><span class="checkmark"></span></label>
+                            <div class="task-content"><span class="task-title">完成Q2产品规划文档</span><span class="task-meta">🕐 10:00 - 12:00 · 高优先级</span></div>
+                            <span class="task-tag tag-work">工作</span>
+                        </div>
+                        <div class="task-item priority-mid">
+                            <label class="task-check"><input type="checkbox"><span class="checkmark"></span></label>
+                            <div class="task-content"><span class="task-title">网球训练 - 正手提升</span><span class="task-meta">🕐 17:00 - 18:30 · 中优先级</span></div>
+                            <span class="task-tag tag-health">健康</span>
+                        </div>
+                        <div class="task-item priority-low">
+                            <label class="task-check"><input type="checkbox"><span class="checkmark"></span></label>
+                            <div class="task-content"><span class="task-title">阅读《原子习惯》第5章</span><span class="task-meta">🕐 21:00 - 22:00 · 低优先级</span></div>
+                            <span class="task-tag tag-personal">个人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card schedule-preview">
+                    <div class="card-header"><h3>日程时间线</h3><button class="btn-text" onclick="navigateTo('schedule')">查看全部 →</button></div>
+                    <div class="timeline" id="timeline">
+                        <div class="timeline-item current"><div class="timeline-time">09:00</div><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-title">晨间复盘</div><div class="timeline-desc">AI 已整理昨日总结</div></div></div>
+                        <div class="timeline-item"><div class="timeline-time">10:00</div><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-title">产品规划会议</div><div class="timeline-desc">与设计团队同步</div></div></div>
+                        <div class="timeline-item"><div class="timeline-time">14:00</div><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-title">深度工作时段</div><div class="timeline-desc">AI 自动屏蔽通知</div></div></div>
+                        <div class="timeline-item"><div class="timeline-time">17:00</div><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-title">网球训练</div><div class="timeline-desc">正手技术提升</div></div></div>
+                    </div>
+                </div>
+                <div class="card health-quick">
+                    <div class="card-header"><h3>健康概览</h3><button class="btn-text" onclick="navigateTo('health')">详情 →</button></div>
+                    <div class="health-stats">
+                        <div class="stat-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="ring-bg"/><circle cx="50" cy="50" r="42" class="ring-fill" style="--progress: 75"/></svg><div class="stat-ring-label"><span class="stat-value">7.5h</span><span class="stat-name">睡眠</span></div></div>
+                        <div class="stat-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="ring-bg"/><circle cx="50" cy="50" r="42" class="ring-fill ring-green" style="--progress: 60"/></svg><div class="stat-ring-label"><span class="stat-value">6,240</span><span class="stat-name">步数</span></div></div>
+                        <div class="stat-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="ring-bg"/><circle cx="50" cy="50" r="42" class="ring-fill ring-orange" style="--progress: 45"/></svg><div class="stat-ring-label"><span class="stat-value">1,850</span><span class="stat-name">卡路里</span></div></div>
+                    </div>
+                </div>
+                <div class="card goal-quick">
+                    <div class="card-header"><h3>目标追踪</h3><button class="btn-text" onclick="navigateTo('goals')">管理 →</button></div>
+                    <div class="goal-list-mini">
+                        <div class="goal-mini-item"><div class="goal-mini-header"><span>🏸 网球水平提升至 4.0</span><span class="goal-percent">65%</span></div><div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div></div>
+                        <div class="goal-mini-item"><div class="goal-mini-header"><span>📚 年度阅读 24 本书</span><span class="goal-percent">42%</span></div><div class="progress-bar"><div class="progress-fill fill-blue" style="width:42%"></div></div></div>
+                        <div class="goal-mini-item"><div class="goal-mini-header"><span>💼 完成产品V2发布</span><span class="goal-percent">78%</span></div><div class="progress-bar"><div class="progress-fill fill-green" style="width:78%"></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule -->
+        <section class="page" id="page-schedule">
+            <div class="page-header-row"><div><h3 class="section-title">智能日程管理</h3><p class="section-desc">语音/文字输入，AI 自动规划你的一天</p></div><button class="btn-primary" id="addScheduleBtn">+ 新建日程</button></div>
+            <div class="card input-card">
+                <div class="smart-input"><span class="input-icon">🎙️</span><input type="text" id="scheduleInput" placeholder="试试输入：明天下午3点和李总开会讨论Q2计划..." class="smart-input-field"><button class="btn-send" id="parseInputBtn">AI 解析</button></div>
+                <div class="ai-suggestion hidden" id="aiSuggestion"><div class="suggestion-header"><span class="ai-badge">AI 解析结果</span></div><div class="suggestion-content" id="suggestionContent"></div><div class="suggestion-actions"><button class="btn-primary btn-sm" id="confirmSchedule">确认添加</button><button class="btn-ghost btn-sm" id="cancelSchedule">取消</button></div></div>
+            </div>
+            <div class="card"><div class="card-header"><h3>本周日程</h3><div class="view-toggle"><button class="view-btn active" data-view="week">周视图</button><button class="view-btn" data-view="day">日视图</button></div></div><div class="calendar-week" id="calendarWeek"></div></div>
+            <div class="card"><div class="card-header"><h3>🤖 AI 每日简报</h3><span class="auto-badge">自动生成</span></div><div class="briefing-content"><div class="briefing-item"><span class="briefing-icon">📊</span><div><strong>工作效率</strong>：昨日深度工作 4.2 小时，比上周平均多 0.5 小时</div></div><div class="briefing-item"><span class="briefing-icon">⚡</span><div><strong>建议</strong>：今天 10-12 点是你的高效时段，已安排重要任务</div></div><div class="briefing-item"><span class="briefing-icon">🔄</span><div><strong>冲突提醒</strong>：下午 2 点有两个日程重叠，已自动调整会议至 2:30</div></div></div></div>
+        </section>
+
+        <!-- Health -->
+        <section class="page" id="page-health">
+            <div class="page-header-row"><div><h3 class="section-title">健康习惯追踪</h3><p class="section-desc">运动 · 睡眠 · 饮食 · AI 周报</p></div><button class="btn-primary" id="addHealthBtn">+ 记录数据</button></div>
+            <div class="health-grid">
+                <div class="card health-metric-card"><div class="metric-icon">🏸</div><div class="metric-info"><span class="metric-label">本周网球</span><span class="metric-value">3 次</span><span class="metric-change positive">↑ 比上周多 1 次</span></div></div>
+                <div class="card health-metric-card"><div class="metric-icon">🏋️</div><div class="metric-info"><span class="metric-label">健身训练</span><span class="metric-value">4 次</span><span class="metric-change positive">↑ 达标</span></div></div>
+                <div class="card health-metric-card"><div class="metric-icon">😴</div><div class="metric-info"><span class="metric-label">平均睡眠</span><span class="metric-value">7.2h</span><span class="metric-change neutral">→ 保持稳定</span></div></div>
+                <div class="card health-metric-card"><div class="metric-icon">🥗</div><div class="metric-info"><span class="metric-label">饮食评分</span><span class="metric-value">B+</span><span class="metric-change positive">↑ 改善中</span></div></div>
+            </div>
+            <div class="card"><div class="card-header"><h3>运动趋势（本周）</h3><div class="view-toggle"><button class="view-btn active">周</button><button class="view-btn">月</button></div></div><div class="chart-container" id="healthChart"><div class="bar-chart"><div class="bar-group"><div class="bar" style="height: 60%"><span class="bar-value">45min</span></div><span class="bar-label">周一</span></div><div class="bar-group"><div class="bar bar-accent" style="height: 80%"><span class="bar-value">60min</span></div><span class="bar-label">周二</span></div><div class="bar-group"><div class="bar" style="height: 40%"><span class="bar-value">30min</span></div><span class="bar-label">周三</span></div><div class="bar-group"><div class="bar bar-accent" style="height: 90%"><span class="bar-value">70min</span></div><span class="bar-label">周四</span></div><div class="bar-group"><div class="bar" style="height: 70%"><span class="bar-value">55min</span></div><span class="bar-label">周五</span></div><div class="bar-group"><div class="bar bar-green" style="height: 100%"><span class="bar-value">90min</span></div><span class="bar-label">周六</span></div><div class="bar-group"><div class="bar bar-green" style="height: 50%"><span class="bar-value">40min</span></div><span class="bar-label">周日</span></div></div></div></div>
+            <div class="card"><div class="card-header"><h3>🤖 AI 健康周报</h3><span class="auto-badge">第 9 周</span></div><div class="ai-report"><div class="report-section"><h4>📈 本周亮点</h4><ul><li>网球训练频率提升，正手击球速度提高 12%</li><li>连续 5 天达成 7 小时以上睡眠目标</li><li>蛋白质摄入量达到推荐值的 95%</li></ul></div><div class="report-section"><h4>⚠️ 改善建议</h4><ul><li>周三运动量偏低，建议增加一次轻度有氧</li><li>晚间屏幕时间偏长（平均 2.3h），可能影响睡眠质量</li><li>水分摄入不足，建议设置定时提醒</li></ul></div><div class="report-section"><h4>🎯 下周计划</h4><ul><li>网球：周二/四/六安排训练，重点练习反手</li><li>健身：增加核心力量训练至每周 2 次</li><li>睡眠：目标 11 点前入睡，减少蓝光暴露</li></ul></div></div></div>
+        </section>
+
+        <!-- Goals -->
+        <section class="page" id="page-goals">
+            <div class="page-header-row"><div><h3 class="section-title">目标分解引擎</h3><p class="section-desc">大目标拆解为可执行的里程碑和任务</p></div><button class="btn-primary" id="addGoalBtn">+ 新建目标</button></div>
+            <div class="goals-container">
+                <div class="card goal-card">
+                    <div class="goal-header"><div class="goal-title-row"><span class="goal-emoji">🏸</span><div><h4>网球水平提升至 NTRP 4.0</h4><span class="goal-deadline">截止：2026-06-30 · 剩余 118 天</span></div></div><div class="goal-progress-badge">65%</div></div>
+                    <div class="progress-bar progress-bar-lg"><div class="progress-fill" style="width:65%"></div></div>
+                    <div class="milestones">
+                        <div class="milestone completed"><div class="milestone-marker">✓</div><div class="milestone-info"><span class="milestone-name">基础正手稳定性</span><span class="milestone-date">已完成 · 1月</span></div></div>
+                        <div class="milestone completed"><div class="milestone-marker">✓</div><div class="milestone-info"><span class="milestone-name">反手切削技术</span><span class="milestone-date">已完成 · 2月</span></div></div>
+                        <div class="milestone active"><div class="milestone-marker">◉</div><div class="milestone-info"><span class="milestone-name">发球与网前技术</span><span class="milestone-date">进行中 · 3月</span></div><div class="milestone-tasks"><div class="mini-task done">✓ 平击发球稳定性达到 70%</div><div class="mini-task done">✓ 侧旋发球练习 10 次课</div><div class="mini-task current">→ 网前截击反应训练</div><div class="mini-task">○ 发球战术组合练习</div></div></div>
+                        <div class="milestone"><div class="milestone-marker">○</div><div class="milestone-info"><span class="milestone-name">比赛策略与心态</span><span class="milestone-date">计划 · 4-5月</span></div></div>
+                        <div class="milestone"><div class="milestone-marker">○</div><div class="milestone-info"><span class="milestone-name">实战比赛验证</span><span class="milestone-date">计划 · 6月</span></div></div>
+                    </div>
+                </div>
+                <div class="card goal-card">
+                    <div class="goal-header"><div class="goal-title-row"><span class="goal-emoji">📚</span><div><h4>年度阅读 24 本书</h4><span class="goal-deadline">截止：2026-12-31 · 已完成 10/24</span></div></div><div class="goal-progress-badge badge-blue">42%</div></div>
+                    <div class="progress-bar progress-bar-lg"><div class="progress-fill fill-blue" style="width:42%"></div></div>
+                    <div class="milestones">
+                        <div class="milestone completed"><div class="milestone-marker">✓</div><div class="milestone-info"><span class="milestone-name">Q1 目标：6 本</span><span class="milestone-date">已完成 6/6</span></div></div>
+                        <div class="milestone active"><div class="milestone-marker">◉</div><div class="milestone-info"><span class="milestone-name">Q2 目标：6 本</span><span class="milestone-date">进行中 4/6</span></div><div class="milestone-tasks"><div class="mini-task done">✓ 《原子习惯》</div><div class="mini-task done">✓ 《深度工作》</div><div class="mini-task done">✓ 《系统之美》</div><div class="mini-task current">→ 《原则》阅读中 (68%)</div><div class="mini-task">○ 《思考快与慢》</div><div class="mini-task">○ 待选书目</div></div></div>
+                        <div class="milestone"><div class="milestone-marker">○</div><div class="milestone-info"><span class="milestone-name">Q3 目标：6 本</span><span class="milestone-date">计划中</span></div></div>
+                        <div class="milestone"><div class="milestone-marker">○</div><div class="milestone-info"><span class="milestone-name">Q4 目标：6 本</span><span class="milestone-date">计划中</span></div></div>
+                    </div>
+                </div>
+                <div class="card goal-card">
+                    <div class="goal-header"><div class="goal-title-row"><span class="goal-emoji">💼</span><div><h4>产品 V2 版本发布</h4><span class="goal-deadline">截止：2026-04-15 · 剩余 42 天</span></div></div><div class="goal-progress-badge badge-green">78%</div></div>
+                    <div class="progress-bar progress-bar-lg"><div class="progress-fill fill-green" style="width:78%"></div></div>
+                    <div class="milestones">
+                        <div class="milestone completed"><div class="milestone-marker">✓</div><div class="milestone-info"><span class="milestone-name">需求分析与设计</span><span class="milestone-date">已完成</span></div></div>
+                        <div class="milestone completed"><div class="milestone-marker">✓</div><div class="milestone-info"><span class="milestone-name">核心功能开发</span><span class="milestone-date">已完成</span></div></div>
+                        <div class="milestone active"><div class="milestone-marker">◉</div><div class="milestone-info"><span class="milestone-name">测试与优化</span><span class="milestone-date">进行中</span></div></div>
+                        <div class="milestone"><div class="milestone-marker">○</div><div class="milestone-info"><span class="milestone-name">灰度发布与上线</span><span class="milestone-date">计划 · 4月</span></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Focus -->
+        <section class="page" id="page-focus">
+            <div class="focus-container">
+                <div class="focus-main">
+                    <div class="focus-status" id="focusStatus">准备专注</div>
+                    <div class="focus-timer" id="focusTimer">25:00</div>
+                    <div class="focus-task-display" id="focusTaskDisplay">选择一个任务开始专注...</div>
+                    <div class="focus-controls"><button class="btn-focus-ctrl" id="focusStartBtn">▶ 开始</button><button class="btn-focus-ctrl btn-outline" id="focusResetBtn">↺ 重置</button></div>
+                    <div class="focus-presets"><button class="preset-btn active" data-minutes="25">25 分钟</button><button class="preset-btn" data-minutes="45">45 分钟</button><button class="preset-btn" data-minutes="60">60 分钟</button><button class="preset-btn" data-minutes="90">90 分钟</button></div>
+                </div>
+                <div class="focus-sidebar">
+                    <div class="card"><div class="card-header"><h3>选择专注任务</h3></div><div class="focus-task-list"><div class="focus-task-item" data-task="完成Q2产品规划文档"><span class="focus-task-name">完成Q2产品规划文档</span><span class="task-tag tag-work">工作</span></div><div class="focus-task-item" data-task="编写技术方案评审"><span class="focus-task-name">编写技术方案评审</span><span class="task-tag tag-work">工作</span></div><div class="focus-task-item" data-task="阅读《原则》第8章"><span class="focus-task-name">阅读《原则》第8章</span><span class="task-tag tag-personal">个人</span></div></div></div>
+                    <div class="card"><div class="card-header"><h3>今日专注统计</h3></div><div class="focus-stats"><div class="focus-stat"><span class="focus-stat-value">3</span><span class="focus-stat-label">完成轮次</span></div><div class="focus-stat"><span class="focus-stat-value">1h 45m</span><span class="focus-stat-label">专注时长</span></div><div class="focus-stat"><span class="focus-stat-value">92%</span><span class="focus-stat-label">完成率</span></div></div></div>
+                    <div class="card ai-card"><div class="card-header"><h3>🤖 AI 建议</h3></div><p class="ai-tip">根据你的效率曲线，当前时段适合进行深度工作。建议先完成「产品规划文档」，预计需要 2 个番茄钟。</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modals -->
+        <div class="modal-overlay hidden" id="scheduleModal"><div class="modal"><div class="modal-header"><h3>新建日程</h3><button class="modal-close" onclick="closeModal('scheduleModal')">×</button></div><div class="modal-body"><div class="form-group"><label>标题</label><input type="text" placeholder="日程标题" class="form-input" id="newScheduleTitle"></div><div class="form-row"><div class="form-group"><label>日期</label><input type="date" class="form-input" id="newScheduleDate"></div><div class="form-group"><label>时间</label><input type="time" class="form-input" id="newScheduleTime"></div></div><div class="form-group"><label>类别</label><select class="form-input" id="newScheduleCategory"><option value="work">工作</option><option value="health">健康</option><option value="personal">个人</option><option value="social">社交</option></select></div><div class="form-group"><label>备注</label><textarea placeholder="补充说明..." class="form-input form-textarea" id="newScheduleNote"></textarea></div></div><div class="modal-footer"><button class="btn-ghost" onclick="closeModal('scheduleModal')">取消</button><button class="btn-primary" onclick="closeModal('scheduleModal')">添加日程</button></div></div></div>
+
+        <div class="modal-overlay hidden" id="goalModal"><div class="modal"><div class="modal-header"><h3>新建目标</h3><button class="modal-close" onclick="closeModal('goalModal')">×</button></div><div class="modal-body"><div class="form-group"><label>目标名称</label><input type="text" placeholder="输入你的目标..." class="form-input" id="newGoalTitle"></div><div class="form-group"><label>截止日期</label><input type="date" class="form-input" id="newGoalDeadline"></div><div class="form-group"><label>描述</label><textarea placeholder="详细描述你的目标，AI 将自动分解为里程碑..." class="form-input form-textarea" id="newGoalDesc"></textarea></div><div class="ai-decompose hidden" id="aiDecompose"><div class="suggestion-header"><span class="ai-badge">AI 目标分解</span></div><div id="decomposeResult"></div></div></div><div class="modal-footer"><button class="btn-ghost" onclick="closeModal('goalModal')">取消</button><button class="btn-secondary" id="aiDecomposeBtn">🤖 AI 分解</button><button class="btn-primary" onclick="closeModal('goalModal')">创建目标</button></div></div></div>
+
+        <div class="modal-overlay hidden" id="healthModal"><div class="modal"><div class="modal-header"><h3>记录健康数据</h3><button class="modal-close" onclick="closeModal('healthModal')">×</button></div><div class="modal-body"><div class="form-group"><label>类型</label><select class="form-input" id="healthType"><option value="tennis">🏸 网球</option><option value="gym">🏋️ 健身</option><option value="sleep">😴 睡眠</option><option value="nutrition">🥗 饮食</option><option value="other">🏃 其他运动</option></select></div><div class="form-row"><div class="form-group"><label>时长（分钟）</label><input type="number" placeholder="60" class="form-input" id="healthDuration"></div><div class="form-group"><label>日期</label><input type="date" class="form-input" id="healthDate"></div></div><div class="form-group"><label>备注</label><textarea placeholder="记录训练内容、感受等..." class="form-input form-textarea" id="healthNote"></textarea></div></div><div class="modal-footer"><button class="btn-ghost" onclick="closeModal('healthModal')">取消</button><button class="btn-primary" onclick="closeModal('healthModal')">保存记录</button></div></div></div>
+
+        <div class="notif-panel hidden" id="notifPanel"><div class="notif-header"><h3>通知</h3><button class="btn-text" id="clearNotifs">全部已读</button></div><div class="notif-list"><div class="notif-item unread"><span class="notif-dot"></span><div class="notif-content"><div class="notif-title">日程提醒</div><div class="notif-desc">10:00 产品规划会议即将开始</div><div class="notif-time">5 分钟前</div></div></div><div class="notif-item unread"><span class="notif-dot"></span><div class="notif-content"><div class="notif-title">AI 建议</div><div class="notif-desc">明天日程已自动规划，点击查看</div><div class="notif-time">1 小时前</div></div></div><div class="notif-item"><span class="notif-dot"></span><div class="notif-content"><div class="notif-title">目标进度</div><div class="notif-desc">「网球训练」本周目标已达成！</div><div class="notif-time">昨天</div></div></div></div></div>
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    initNavigation(); initDateDisplay(); initGreeting(); initCalendar();
+    initFocusMode(); initSmartInput(); initModals(); initTheme();
+    initNotifications(); initTaskChecks();
+});
+
+function initNavigation() {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => navigateTo(item.dataset.page));
+    });
+}
+
+function navigateTo(page) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const activeNav = document.querySelector(`.nav-item[data-page="${page}"]`);
+    if (activeNav) activeNav.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const activePage = document.getElementById(`page-${page}`);
+    if (activePage) activePage.classList.add('active');
+    const titles = { dashboard: '今日概览', schedule: '智能日程', health: '健康习惯', goals: '目标引擎', focus: '专注模式' };
+    document.getElementById('pageTitle').textContent = titles[page] || '';
+    document.getElementById('sidebar').classList.remove('open');
+}
+
+function initDateDisplay() {
+    const now = new Date();
+    const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+    document.getElementById('dateDisplay').textContent = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
+}
+
+function initGreeting() {
+    const hour = new Date().getHours();
+    let g;
+    if (hour < 6) g = '夜深了，注意休息';
+    else if (hour < 12) g = '早上好，开启高效的一天';
+    else if (hour < 14) g = '中午好，记得休息一下';
+    else if (hour < 18) g = '下午好，保持专注';
+    else g = '晚上好，回顾今天的收获';
+    document.getElementById('greeting').textContent = `👋 ${g}！`;
+}
+
+function initCalendar() {
+    const container = document.getElementById('calendarWeek');
+    if (!container) return;
+    const now = new Date();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - now.getDay() + 1);
+    const weekdays = ['周一','周二','周三','周四','周五','周六','周日'];
+    const events = [
+        [{text:'晨会',type:'work'},{text:'网球',type:'health'}],
+        [{text:'产品评审',type:'work'}],
+        [{text:'深度工作',type:'work'},{text:'健身',type:'health'}],
+        [{text:'团队1:1',type:'work'},{text:'网球',type:'health'}],
+        [{text:'周报',type:'work'}],
+        [{text:'网球比赛',type:'health'},{text:'阅读',type:'personal'}],
+        [{text:'休息',type:'personal'}]
+    ];
+    for (let i = 0; i < 7; i++) {
+        const day = new Date(monday); day.setDate(monday.getDate() + i);
+        const isToday = day.toDateString() === now.toDateString();
+        const dayEl = document.createElement('div');
+        dayEl.className = `calendar-day${isToday ? ' today' : ''}`;
+        dayEl.innerHTML = `<div class="calendar-day-header">${weekdays[i]}</div><div class="calendar-day-num">${day.getDate()}</div>${(events[i]||[]).map(e=>`<div class="calendar-event event-${e.type}">${e.text}</div>`).join('')}`;
+        container.appendChild(dayEl);
+    }
+}
+
+function initFocusMode() {
+    let timer = null, totalSeconds = 25*60, remainingSeconds = totalSeconds, isRunning = false;
+    const timerEl = document.getElementById('focusTimer'), statusEl = document.getElementById('focusStatus');
+    const startBtn = document.getElementById('focusStartBtn'), resetBtn = document.getElementById('focusResetBtn');
+    const taskDisplay = document.getElementById('focusTaskDisplay');
+    function updateDisplay() { const m = Math.floor(remainingSeconds/60), s = remainingSeconds%60; timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+    startBtn.addEventListener('click', () => {
+        if (isRunning) { clearInterval(timer); isRunning=false; startBtn.textContent='▶ 继续'; startBtn.classList.remove('btn-pause'); statusEl.textContent='已暂停'; }
+        else { isRunning=true; startBtn.textContent='⏸ 暂停'; startBtn.classList.add('btn-pause'); statusEl.textContent='专注中...';
+            timer = setInterval(() => { if(remainingSeconds<=0){clearInterval(timer);isRunning=false;statusEl.textContent='🎉 完成！';startBtn.textContent='▶ 开始';startBtn.classList.remove('btn-pause');return;} remainingSeconds--; updateDisplay(); }, 1000);
+        }
+    });
+    resetBtn.addEventListener('click', () => { clearInterval(timer); isRunning=false; remainingSeconds=totalSeconds; updateDisplay(); startBtn.textContent='▶ 开始'; startBtn.classList.remove('btn-pause'); statusEl.textContent='准备专注'; });
+    document.querySelectorAll('.preset-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); totalSeconds=parseInt(btn.dataset.minutes)*60; remainingSeconds=totalSeconds; clearInterval(timer); isRunning=false; updateDisplay(); startBtn.textContent='▶ 开始'; startBtn.classList.remove('btn-pause'); statusEl.textContent='准备专注'; }); });
+    document.querySelectorAll('.focus-task-item').forEach(item => { item.addEventListener('click', () => { document.querySelectorAll('.focus-task-item').forEach(i=>i.classList.remove('selected')); item.classList.add('selected'); taskDisplay.textContent=`当前任务：${item.dataset.task}`; }); });
+}
+
+function initSmartInput() {
+    const input = document.getElementById('scheduleInput'), parseBtn = document.getElementById('parseInputBtn');
+    const suggestion = document.getElementById('aiSuggestion'), content = document.getElementById('suggestionContent');
+    const confirmBtn = document.getElementById('confirmSchedule'), cancelBtn = document.getElementById('cancelSchedule');
+    if (!parseBtn) return;
+    parseBtn.addEventListener('click', () => {
+        const text = input.value.trim(); if (!text) return;
+        parseBtn.textContent = '解析中...'; parseBtn.disabled = true;
+        setTimeout(() => {
+            const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+            const dateStr = `${tomorrow.getMonth()+1}月${tomorrow.getDate()}日`;
+            let time='15:00',duration='1小时',category='工作';
+            if(text.includes('下午'))time='14:00'; if(text.includes('3点')||text.includes('三点'))time='15:00';
+            if(text.includes('上午'))time='10:00'; if(text.includes('网球')||text.includes('运动'))category='健康';
+            if(text.includes('读书')||text.includes('阅读'))category='个人';
+            content.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;font-size:14px;"><div>📋 <strong>标题</strong>：${text}</div><div>📅 <strong>日期</strong>：${dateStr}</div><div>🕐 <strong>时间</strong>：${time}（预计 ${duration}）</div><div>🏷️ <strong>类别</strong>：${category}</div><div style="color:var(--text-tertiary);font-size:12px;margin-top:4px;">💡 AI 已自动检测时间冲突，该时段可用</div></div>`;
+            suggestion.classList.remove('hidden'); parseBtn.textContent='AI 解析'; parseBtn.disabled=false;
+        }, 800);
+    });
+    input.addEventListener('keydown', e => { if(e.key==='Enter') parseBtn.click(); });
+    confirmBtn.addEventListener('click', () => { suggestion.classList.add('hidden'); input.value=''; showToast('日程已添加'); });
+    cancelBtn.addEventListener('click', () => { suggestion.classList.add('hidden'); });
+}
+
+function initModals() {
+    document.getElementById('addScheduleBtn')?.addEventListener('click', () => openModal('scheduleModal'));
+    document.getElementById('addGoalBtn')?.addEventListener('click', () => openModal('goalModal'));
+    document.getElementById('addHealthBtn')?.addEventListener('click', () => openModal('healthModal'));
+    const aiDecomposeBtn = document.getElementById('aiDecomposeBtn');
+    if (aiDecomposeBtn) {
+        aiDecomposeBtn.addEventListener('click', () => {
+            const title = document.getElementById('newGoalTitle').value || '新目标';
+            const decomposeEl = document.getElementById('aiDecompose'), resultEl = document.getElementById('decomposeResult');
+            aiDecomposeBtn.textContent = '🤖 分解中...'; aiDecomposeBtn.disabled = true;
+            setTimeout(() => {
+                resultEl.innerHTML = `<div style="font-size:14px;line-height:1.8;margin-top:8px;"><div><strong>目标</strong>：${title}</div><div style="margin-top:8px;"><strong>建议里程碑：</strong></div><div style="padding-left:12px;"><div>1️⃣ 调研与规划阶段（第1-2周）</div><div>2️⃣ 核心执行阶段（第3-8周）</div><div>3️⃣ 优化与巩固（第9-10周）</div><div>4️⃣ 验证与总结（第11-12周）</div></div><div style="color:var(--text-tertiary);font-size:12px;margin-top:8px;">💡 每个里程碑将自动生成具体的周任务</div></div>`;
+                decomposeEl.classList.remove('hidden'); aiDecomposeBtn.textContent='🤖 重新分解'; aiDecomposeBtn.disabled=false;
+            }, 1000);
+        });
+    }
+    document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', e => { if(e.target===overlay) overlay.classList.add('hidden'); }); });
+}
+
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+function initTheme() {
+    const toggle = document.getElementById('themeToggle');
+    if (localStorage.getItem('flowday-theme') === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    toggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+        if(isDark){document.documentElement.removeAttribute('data-theme');localStorage.setItem('flowday-theme','light');}
+        else{document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('flowday-theme','dark');}
+    });
+    document.getElementById('menuToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('open'); });
+}
+
+function initNotifications() {
+    const btn = document.getElementById('notifBtn'), panel = document.getElementById('notifPanel');
+    btn.addEventListener('click', e => { e.stopPropagation(); panel.classList.toggle('hidden'); });
+    document.addEventListener('click', e => { if(!panel.contains(e.target)&&e.target!==btn) panel.classList.add('hidden'); });
+    document.getElementById('clearNotifs').addEventListener('click', () => { document.querySelectorAll('.notif-item.unread').forEach(item=>item.classList.remove('unread')); });
+}
+
+function initTaskChecks() {
+    document.querySelectorAll('.task-check input').forEach(cb => {
+        cb.addEventListener('change', function() { const ti=this.closest('.task-item'); if(this.checked){ti.style.opacity='0.6';setTimeout(()=>{ti.style.opacity='';},1500);} });
+    });
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text-primary);color:var(--bg-primary);padding:12px 24px;border-radius:8px;font-size:14px;font-weight:500;z-index:300;animation:fadeIn 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.15);';
+    toast.textContent = `✓ ${message}`;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(),300); }, 2000);
+}
+</script>
+</body>
+</html>
