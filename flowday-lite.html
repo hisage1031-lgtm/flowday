@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>FlowDay</title><style>
+*{margin:0;padding:0;box-sizing:border-box}:root{--a:#6366f1;--al:#eef2ff;--g:#10b981;--gl:#ecfdf5;--o:#f59e0b;--ol:#fffbeb;--b:#3b82f6;--t1:#1a1d23;--t2:#6b7280;--t3:#9ca3af;--bg:#f8f9fb;--card:#fff;--bd:#e5e7eb;--bl:#f3f4f6;--r:12px}
+[data-theme=dark]{--bg:#0f1117;--card:#1a1d27;--t1:#f0f1f3;--t2:#9ca3af;--t3:#6b7280;--bd:#2a2d35;--bl:#1f2129;--al:#1e1b4b;--gl:#052e16;--ol:#422006;--a:#818cf8}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--t1);display:flex;min-height:100vh}
+.sb{width:220px;background:#1a1d23;position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column}
+.sb-h{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{display:flex;align-items:center;gap:8px;color:#fff;font-size:18px;font-weight:700}.logo i{color:var(--a)}
+.nav{list-style:none;padding:10px;flex:1}
+.nav li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:13px;font-weight:500;margin-bottom:2px;transition:.2s}
+.nav li:hover{background:#2a2d35;color:#fff}.nav li.on{background:#3a3d45;color:#fff}
+.sb-f{padding:14px 18px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:8px}
+.av{width:32px;height:32px;border-radius:50%;background:var(--a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.sb-f span{color:#fff;font-size:12px}.sb-f small{color:var(--a);font-size:10px;display:block}
+.mn{margin-left:220px;flex:1;min-height:100vh}
+.top{height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--bg);z-index:50}
+.top h2{font-size:16px;font-weight:600}.top .dt{font-size:12px;color:var(--t2);margin-left:12px}
+.top-r{display:flex;gap:6px}.top-r button{width:34px;height:34px;border:1px solid var(--bd);border-radius:8px;background:var(--card);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.pg{display:none;padding:20px 28px;max-width:1100px;animation:.3s fadein}
+.pg.on{display:block}@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.cd{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.cd-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.cd-h h3{font-size:14px;font-weight:600}
+.hero{background:linear-gradient(135deg,var(--a),#8b5cf6);border-radius:var(--r);padding:24px 28px;color:#fff;margin-bottom:18px}
+.hero h1{font-size:20px;font-weight:600;margin-bottom:6px}.hero p{font-size:13px;opacity:.9}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tk{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--bl);margin-bottom:6px}
+.tk input{display:none}.ck{width:18px;height:18px;border:2px solid var(--bd);border-radius:50%;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
+.tk input:checked+.ck{background:var(--g);border-color:var(--g)}.tk input:checked+.ck::after{content:'✓';color:#fff;font-size:10px}
+.tk-c{flex:1}.tk-t{font-size:13px;font-weight:500;display:block}.tk-m{font-size:11px;color:var(--t3)}
+.tg{font-size:10px;padding:2px 7px;border-radius:12px;font-weight:500}
+.tg-w{background:var(--al);color:var(--a)}.tg-h{background:var(--gl);color:var(--g)}.tg-p{background:var(--ol);color:var(--o)}
+.bdg{font-size:10px;background:var(--a);color:#fff;padding:2px 7px;border-radius:12px;font-weight:600;margin-left:6px}
+.tl{position:relative;padding-left:16px}.tl-i{display:flex;align-items:flex-start;gap:12px;padding:8px 0}
+.tl-t{font-size:12px;color:var(--t2);width:36px;flex-shrink:0;font-weight:500}
+.tl-d{width:8px;height:8px;border-radius:50%;background:var(--bd);flex-shrink:0;margin-top:4px}
+.tl-i.cur .tl-d{background:var(--a);box-shadow:0 0 0 3px var(--al)}
+.tl-n{font-size:13px;font-weight:500}.tl-s{font-size:11px;color:var(--t3)}
+.sr{position:relative;width:90px;height:90px}.sr svg{width:100%;height:100%;transform:rotate(-90deg)}
+.sr .bg{fill:none;stroke:var(--bl);stroke-width:6}.sr .fl{fill:none;stroke:var(--a);stroke-width:6;stroke-linecap:round;stroke-dasharray:264;stroke-dashoffset:calc(264 - 264*var(--p)/100)}
+.sr .fg{stroke:var(--g)}.sr .fo{stroke:var(--o)}
+.sr-l{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.sr-v{display:block;font-size:15px;font-weight:700}.sr-n{font-size:10px;color:var(--t3)}
+.hs{display:flex;justify-content:space-around;padding:6px 0}
+.pb{height:6px;background:var(--bl);border-radius:3px;overflow:hidden;margin-top:4px}
+.pf{height:100%;border-radius:3px;background:var(--a)}.pf-b{background:var(--b)}.pf-g{background:var(--g)}
+.gm{margin-bottom:10px}.gm-h{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}.gm-h b{color:var(--a);font-weight:600}
+.si{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:3px 3px 3px 14px}
+.si input{flex:1;border:none;background:none;font-size:13px;padding:8px 0;color:var(--t1);outline:none;font-family:inherit}
+.si input::placeholder{color:var(--t3)}
+.si button{background:var(--a);color:#fff;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer}
+.hg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.hc{display:flex;align-items:center;gap:12px;padding:14px}.hc-i{font-size:24px}.hc-l{font-size:11px;color:var(--t3)}.hc-v{font-size:18px;font-weight:700}.hc-c{font-size:10px;font-weight:500}
+.hc-c.pos{color:var(--g)}.hc-c.neu{color:var(--t3)}
+.bc{display:flex;align-items:flex-end;justify-content:space-around;height:180px;padding:0 16px}
+.bg-g{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1}
+.br{width:30px;background:var(--a);border-radius:5px 5px 0 0;opacity:.7;position:relative}.br:hover{opacity:1}
+.br span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:600;color:var(--t2);white-space:nowrap}
+.bg-l{font-size:11px;color:var(--t3)}
+.br-g{background:var(--g);opacity:.8}
+.rp h4{font-size:13px;font-weight:600;margin-bottom:6px}.rp ul{list-style:none}.rp li{font-size:12px;color:var(--t2);line-height:1.6;padding-left:12px;position:relative}
+.rp li::before{content:'·';position:absolute;left:2px;font-weight:700}
+.rp+.rp{margin-top:12px}
+.gc{padding:20px}.gc-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.gc-t{display:flex;gap:12px}.gc-e{font-size:24px}.gc-t h4{font-size:15px;font-weight:600;margin-bottom:2px}
+.gc-d{font-size:11px;color:var(--t3)}.gc-b{background:var(--a);color:#fff;font-size:14px;font-weight:700;padding:5px 12px;border-radius:16px}
+.gc-b.bb{background:var(--b)}.gc-b.bg{background:var(--g)}
+.pb-l{height:7px;border-radius:4px;margin-bottom:16px}
+.ms{display:flex;flex-direction:column;gap:2px}.ms-i{display:flex;align-items:flex-start;gap:12px;padding:8px 0;position:relative}
+.ms-m{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--t3);flex-shrink:0;z-index:1}
+.ms-i.dn .ms-m{color:var(--g);font-weight:700}.ms-i.ac .ms-m{color:var(--a)}
+.ms-n{font-size:13px;font-weight:500}.ms-i.dn .ms-n{color:var(--t3)}.ms-dt{font-size:11px;color:var(--t3)}
+.ms-tk{margin-top:6px;margin-left:30px}.ms-tk div{font-size:12px;color:var(--t2);padding:2px 0}
+.ms-tk .d{color:var(--t3)}.ms-tk .c{color:var(--a);font-weight:500}
+.fc{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
+.fc-m{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;text-align:center;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);min-height:420px}
+.fc-s{font-size:12px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px}
+.fc-t{font-size:72px;font-weight:700;letter-spacing:-2px;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.fc-tk{font-size:14px;color:var(--t2);margin-bottom:28px}
+.fc-c{display:flex;gap:10px;margin-bottom:28px}
+.fc-c button{padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:.2s}
+.fc-c .start{background:var(--a);color:#fff}.fc-c .start:hover{background:#4f46e5}
+.fc-c .reset{background:none;border:1px solid var(--bd);color:var(--t2)}
+.fc-p{display:flex;gap:6px}.fc-p button{padding:5px 14px;border:1px solid var(--bd);border-radius:16px;background:none;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:.2s}
+.fc-p button.on{background:var(--a);color:#fff;border-color:var(--a)}
+.fl{display:flex;flex-direction:column;gap:4px}.fl-i{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:.2s}
+.fl-i:hover{background:var(--bl);border-color:var(--bd)}.fl-i.sel{background:var(--al);border-color:var(--a)}
+.fl-n{font-size:12px;font-weight:500}
+.fs{display:flex;justify-content:space-around;text-align:center}.fs-v{font-size:20px;font-weight:700;color:var(--a)}.fs-l{font-size:10px;color:var(--t3)}
+.ai-c{border-left:3px solid var(--a)}.ai-t{font-size:12px;line-height:1.6;color:var(--t2)}
+.btn{background:var(--a);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer}.btn:hover{background:#4f46e5}
+.btn-t{background:none;border:none;color:var(--a);font-size:12px;font-weight:500;cursor:pointer;padding:0}
+.phr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.phr h3{font-size:18px;font-weight:700;margin-bottom:2px}.phr p{font-size:12px;color:var(--t2)}
+.ab{font-size:10px;color:var(--t3);background:var(--bl);padding:2px 8px;border-radius:10px}
+.bi{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.5;padding:8px 10px;background:var(--bg);border-radius:8px;margin-bottom:8px}
+.asg{margin-top:10px;padding:14px;background:var(--al);border-radius:8px;border:1px solid rgba(99,102,241,.2);display:none}
+.asg.show{display:block}.asg-b{font-size:11px;font-weight:600;color:var(--a);background:rgba(99,102,241,.1);padding:3px 8px;border-radius:12px}
+.asg-c{font-size:13px;line-height:1.6;margin:8px 0}.asg-a{display:flex;gap:6px}
+.asg-a button{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer}
+.asg-a .yes{background:var(--a);color:#fff;border:none}.asg-a .no{background:none;border:1px solid var(--bd);color:var(--t2)}
+.hidden{display:none!important}
+@media(max-width:1024px){.grid{grid-template-columns:1fr}.hg{grid-template-columns:1fr 1fr}.fc{grid-template-columns:1fr}}
+@media(max-width:768px){.sb{transform:translateX(-100%)}.sb.open{transform:translateX(0)}.mn{margin-left:0}.mt{display:flex!important}.pg{padding:14px}.hg{grid-template-columns:1fr}.fc-t{font-size:52px}}
+.mt{display:none;width:34px;height:34px;border:none;background:none;font-size:18px;cursor:pointer;color:var(--t1);align-items:center;justify-content:center}
+</style></head><body>
+<nav class="sb" id="sb"><div class="sb-h"><div class="logo"><i>◆</i> FlowDay</div></div>
+<ul class="nav"><li class="on" data-p="dash">⊞ 今日概览</li><li data-p="sch">▦ 智能日程</li><li data-p="hp">♡ 健康习惯</li><li data-p="goal">◎ 目标引擎</li><li data-p="foc">◉ 专注模式</li></ul>
+<div class="sb-f"><div class="av">U</div><div><span>用户</span><small>Pro 会员</small></div></div></nav>
+<main class="mn"><header class="top"><button class="mt" id="mt">☰</button><div style="display:flex;align-items:center"><h2 id="pt">今日概览</h2><span class="dt" id="dt"></span></div><div class="top-r"><button id="nb">🔔</button><button id="tt">◐</button></div></header>
+<section class="pg on" id="pg-dash">
+<div class="hero"><h1 id="gr"></h1><p>今天有 <b>5</b> 项待办，<b>2</b> 个会议，目标完成度 <b>73%</b></p></div>
+<div class="grid">
+<div class="cd"><div class="cd-h"><h3>今日重点 <span class="bdg">TOP 3</span></h3></div>
+<div class="tk"><label><input type="checkbox"><span class="ck"></span></label><div class="tk-c"><span class="tk-t">完成Q2产品规划文档</span><span class="tk-m">🕐 10:00-12:00 · 高优先级</span></div><span class="tg tg-w">工作</span></div>
+<div class="tk"><label><input type="checkbox"><span class="ck"></span></label><div class="tk-c"><span class="tk-t">网球训练 - 正手提升</span><span class="tk-m">🕐 17:00-18:30 · 中优先级</span></div><span class="tg tg-h">健康</span></div>
+<div class="tk"><label><input type="checkbox"><span class="ck"></span></label><div class="tk-c"><span class="tk-t">阅读《原子习惯》第5章</span><span class="tk-m">🕐 21:00-22:00 · 低优先级</span></div><span class="tg tg-p">个人</span></div></div>
+<div class="cd"><div class="cd-h"><h3>日程时间线</h3><button class="btn-t" onclick="go('sch')">查看全部→</button></div>
+<div class="tl"><div class="tl-i cur"><div class="tl-t">09:00</div><div class="tl-d"></div><div><div class="tl-n">晨间复盘</div><div class="tl-s">AI 已整理昨日总结</div></div></div>
+<div class="tl-i"><div class="tl-t">10:00</div><div class="tl-d"></div><div><div class="tl-n">产品规划会议</div><div class="tl-s">与设计团队同步</div></div></div>
+<div class="tl-i"><div class="tl-t">14:00</div><div class="tl-d"></div><div><div class="tl-n">深度工作时段</div><div class="tl-s">AI 自动屏蔽通知</div></div></div>
+<div class="tl-i"><div class="tl-t">17:00</div><div class="tl-d"></div><div><div class="tl-n">网球训练</div><div class="tl-s">正手技术提升</div></div></div></div></div>
+<div class="cd"><div class="cd-h"><h3>健康概览</h3><button class="btn-t" onclick="go('hp')">详情→</button></div>
+<div class="hs"><div class="sr"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="bg"/><circle cx="50" cy="50" r="42" class="fl" style="--p:75"/></svg><div class="sr-l"><span class="sr-v">7.5h</span><span class="sr-n">睡眠</span></div></div>
+<div class="sr"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="bg"/><circle cx="50" cy="50" r="42" class="fl fg" style="--p:60"/></svg><div class="sr-l"><span class="sr-v">6,240</span><span class="sr-n">步数</span></div></div>
+<div class="sr"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="bg"/><circle cx="50" cy="50" r="42" class="fl fo" style="--p:45"/></svg><div class="sr-l"><span class="sr-v">1,850</span><span class="sr-n">卡路里</span></div></div></div></div>
+<div class="cd"><div class="cd-h"><h3>目标追踪</h3><button class="btn-t" onclick="go('goal')">管理→</button></div>
+<div class="gm"><div class="gm-h"><span>🏸 网球水平提升至 4.0</span><b>65%</b></div><div class="pb"><div class="pf" style="width:65%"></div></div></div>
+<div class="gm"><div class="gm-h"><span>📚 年度阅读 24 本书</span><b style="color:var(--b)">42%</b></div><div class="pb"><div class="pf pf-b" style="width:42%"></div></div></div>
+<div class="gm"><div class="gm-h"><span>💼 完成产品V2发布</span><b style="color:var(--g)">78%</b></div><div class="pb"><div class="pf pf-g" style="width:78%"></div></div></div></div>
+</div></section>
+
+<section class="pg" id="pg-sch">
+<div class="phr"><div><h3>智能日程管理</h3><p>语音/文字输入，AI 自动规划你的一天</p></div><button class="btn">+ 新建日程</button></div>
+<div class="cd"><div class="si"><span>🎙️</span><input type="text" id="sinp" placeholder="试试输入：明天下午3点和李总开会讨论Q2计划..."><button id="spb">AI 解析</button></div>
+<div class="asg" id="asg"><span class="asg-b">AI 解析结果</span><div class="asg-c" id="asgc"></div><div class="asg-a"><button class="yes" id="asgok">确认添加</button><button class="no" id="asgno">取消</button></div></div></div>
+<div class="cd"><div class="cd-h"><h3>本周日程</h3></div><div id="cal" style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px"></div></div>
+<div class="cd"><div class="cd-h"><h3>🤖 AI 每日简报</h3><span class="ab">自动生成</span></div>
+<div class="bi"><span>📊</span><div><b>工作效率</b>：昨日深度工作 4.2 小时，比上周平均多 0.5 小时</div></div>
+<div class="bi"><span>⚡</span><div><b>建议</b>：今天 10-12 点是你的高效时段，已安排重要任务</div></div>
+<div class="bi"><span>🔄</span><div><b>冲突提醒</b>：下午 2 点有两个日程重叠，已自动调整会议至 2:30</div></div></div></section>
+
+<section class="pg" id="pg-hp">
+<div class="phr"><div><h3>健康习惯追踪</h3><p>运动 · 睡眠 · 饮食 · AI 周报</p></div><button class="btn">+ 记录数据</button></div>
+<div class="hg">
+<div class="cd hc"><div class="hc-i">🏸</div><div><span class="hc-l">本周网球</span><div class="hc-v">3 次</div><span class="hc-c pos">↑ 比上周多1次</span></div></div>
+<div class="cd hc"><div class="hc-i">🏋️</div><div><span class="hc-l">健身训练</span><div class="hc-v">4 次</div><span class="hc-c pos">↑ 达标</span></div></div>
+<div class="cd hc"><div class="hc-i">😴</div><div><span class="hc-l">平均睡眠</span><div class="hc-v">7.2h</div><span class="hc-c neu">→ 保持稳定</span></div></div>
+<div class="cd hc"><div class="hc-i">🥗</div><div><span class="hc-l">饮食评分</span><div class="hc-v">B+</div><span class="hc-c pos">↑ 改善中</span></div></div></div>
+<div class="cd"><div class="cd-h"><h3>运动趋势（本周）</h3></div>
+<div class="bc"><div class="bg-g"><div class="br" style="height:60%"><span>45m</span></div><span class="bg-l">周一</span></div><div class="bg-g"><div class="br" style="height:80%;opacity:1"><span>60m</span></div><span class="bg-l">周二</span></div><div class="bg-g"><div class="br" style="height:40%"><span>30m</span></div><span class="bg-l">周三</span></div><div class="bg-g"><div class="br" style="height:90%;opacity:1"><span>70m</span></div><span class="bg-l">周四</span></div><div class="bg-g"><div class="br" style="height:70%"><span>55m</span></div><span class="bg-l">周五</span></div><div class="bg-g"><div class="br br-g" style="height:100%"><span>90m</span></div><span class="bg-l">周六</span></div><div class="bg-g"><div class="br br-g" style="height:50%"><span>40m</span></div><span class="bg-l">周日</span></div></div></div>
+<div class="cd"><div class="cd-h"><h3>🤖 AI 健康周报</h3><span class="ab">第 9 周</span></div>
+<div class="rp"><h4>📈 本周亮点</h4><ul><li>网球训练频率提升，正手击球速度提高 12%</li><li>连续 5 天达成 7 小时以上睡眠目标</li><li>蛋白质摄入量达到推荐值的 95%</li></ul></div>
+<div class="rp"><h4>⚠️ 改善建议</h4><ul><li>周三运动量偏低，建议增加一次轻度有氧</li><li>晚间屏幕时间偏长（平均 2.3h），可能影响睡眠质量</li><li>水分摄入不足，建议设置定时提醒</li></ul></div>
+<div class="rp"><h4>🎯 下周计划</h4><ul><li>网球：周二/四/六安排训练，重点练习反手</li><li>健身：增加核心力量训练至每周 2 次</li><li>睡眠：目标 11 点前入睡，减少蓝光暴露</li></ul></div></div></section>
+
+<section class="pg" id="pg-goal">
+<div class="phr"><div><h3>目标分解引擎</h3><p>大目标拆解为可执行的里程碑和任务</p></div><button class="btn">+ 新建目标</button></div>
+<div class="cd gc"><div class="gc-h"><div class="gc-t"><span class="gc-e">🏸</span><div><h4>网球水平提升至 NTRP 4.0</h4><span class="gc-d">截止：2026-06-30 · 剩余 118 天</span></div></div><div class="gc-b">65%</div></div>
+<div class="pb pb-l"><div class="pf" style="width:65%"></div></div>
+<div class="ms"><div class="ms-i dn"><div class="ms-m">✓</div><div class="ms-info"><span class="ms-n">基础正手稳定性</span><span class="ms-dt">已完成 · 1月</span></div></div>
+<div class="ms-i dn"><div class="ms-m">✓</div><div class="ms-info"><span class="ms-n">反手切削技术</span><span class="ms-dt">已完成 · 2月</span></div></div>
+<div class="ms-i ac"><div class="ms-m">◉</div><div><span class="ms-n">发球与网前技术</span><span class="ms-dt">进行中 · 3月</span>
+<div class="ms-tk"><div class="d">✓ 平击发球稳定性达到 70%</div><div class="d">✓ 侧旋发球练习 10 次课</div><div class="c">→ 网前截击反应训练</div><div>○ 发球战术组合练习</div></div></div></div>
+<div class="ms-i"><div class="ms-m">○</div><div><span class="ms-n">比赛策略与心态</span><span class="ms-dt">计划 · 4-5月</span></div></div>
+<div class="ms-i"><div class="ms-m">○</div><div><span class="ms-n">实战比赛验证</span><span class="ms-dt">计划 · 6月</span></div></div></div></div>
+
+<div class="cd gc"><div class="gc-h"><div class="gc-t"><span class="gc-e">📚</span><div><h4>年度阅读 24 本书</h4><span class="gc-d">截止：2026-12-31 · 已完成 10/24</span></div></div><div class="gc-b bb">42%</div></div>
+<div class="pb pb-l"><div class="pf pf-b" style="width:42%"></div></div>
+<div class="ms"><div class="ms-i dn"><div class="ms-m">✓</div><div><span class="ms-n">Q1 目标：6 本</span><span class="ms-dt">已完成 6/6</span></div></div>
+<div class="ms-i ac"><div class="ms-m">◉</div><div><span class="ms-n">Q2 目标：6 本</span><span class="ms-dt">进行中 4/6</span>
+<div class="ms-tk"><div class="d">✓ 《原子习惯》</div><div class="d">✓ 《深度工作》</div><div class="d">✓ 《系统之美》</div><div class="c">→ 《原则》阅读中 (68%)</div><div>○ 《思考快与慢》</div></div></div></div>
+<div class="ms-i"><div class="ms-m">○</div><div><span class="ms-n">Q3 目标：6 本</span><span class="ms-dt">计划中</span></div></div></div></div>
+
+<div class="cd gc"><div class="gc-h"><div class="gc-t"><span class="gc-e">💼</span><div><h4>产品 V2 版本发布</h4><span class="gc-d">截止：2026-04-15 · 剩余 42 天</span></div></div><div class="gc-b bg">78%</div></div>
+<div class="pb pb-l"><div class="pf pf-g" style="width:78%"></div></div>
+<div class="ms"><div class="ms-i dn"><div class="ms-m">✓</div><div><span class="ms-n">需求分析与设计</span><span class="ms-dt">已完成</span></div></div>
+<div class="ms-i dn"><div class="ms-m">✓</div><div><span class="ms-n">核心功能开发</span><span class="ms-dt">已完成</span></div></div>
+<div class="ms-i ac"><div class="ms-m">◉</div><div><span class="ms-n">测试与优化</span><span class="ms-dt">进行中</span></div></div>
+<div class="ms-i"><div class="ms-m">○</div><div><span class="ms-n">灰度发布与上线</span><span class="ms-dt">计划 · 4月</span></div></div></div></div></section>
+
+<section class="pg" id="pg-foc">
+<div class="fc"><div class="fc-m"><div class="fc-s" id="fst">准备专注</div><div class="fc-t" id="ftm">25:00</div><div class="fc-tk" id="ftk">选择一个任务开始专注...</div>
+<div class="fc-c"><button class="start" id="fgo">▶ 开始</button><button class="reset" id="frs">↺ 重置</button></div>
+<div class="fc-p"><button class="on" data-m="25">25分钟</button><button data-m="45">45分钟</button><button data-m="60">60分钟</button><button data-m="90">90分钟</button></div></div>
+<div><div class="cd"><div class="cd-h"><h3>选择专注任务</h3></div>
+<div class="fl"><div class="fl-i" data-t="完成Q2产品规划文档"><span class="fl-n">完成Q2产品规划文档</span><span class="tg tg-w">工作</span></div>
+<div class="fl-i" data-t="编写技术方案评审"><span class="fl-n">编写技术方案评审</span><span class="tg tg-w">工作</span></div>
+<div class="fl-i" data-t="阅读《原则》第8章"><span class="fl-n">阅读《原则》第8章</span><span class="tg tg-p">个人</span></div></div></div>
+<div class="cd"><div class="cd-h"><h3>今日专注统计</h3></div><div class="fs"><div><div class="fs-v">3</div><div class="fs-l">完成轮次</div></div><div><div class="fs-v">1h45m</div><div class="fs-l">专注时长</div></div><div><div class="fs-v">92%</div><div class="fs-l">完成率</div></div></div></div>
+<div class="cd ai-c"><div class="cd-h"><h3>🤖 AI 建议</h3></div><p class="ai-t">根据你的效率曲线，当前时段适合进行深度工作。建议先完成「产品规划文档」，预计需要 2 个番茄钟。</p></div></div></div></section>
+</main>
+<script>
+const T={dash:'今日概览',sch:'智能日程',hp:'健康习惯',goal:'目标引擎',foc:'专注模式'};
+document.querySelectorAll('.nav li').forEach(l=>l.onclick=()=>go(l.dataset.p));
+function go(p){document.querySelectorAll('.nav li').forEach(l=>l.classList.toggle('on',l.dataset.p===p));document.querySelectorAll('.pg').forEach(g=>g.classList.toggle('on',g.id==='pg-'+p));document.getElementById('pt').textContent=T[p]||'';document.getElementById('sb').classList.remove('open')}
+const now=new Date(),wd=['周日','周一','周二','周三','周四','周五','周六'];
+document.getElementById('dt').textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${wd[now.getDay()]}`;
+const h=now.getHours();document.getElementById('gr').textContent='👋 '+(h<6?'夜深了，注意休息':h<12?'早上好，开启高效的一天':h<14?'中午好，记得休息一下':h<18?'下午好，保持专注':'晚上好，回顾今天的收获')+'！';
+// Calendar
+const cal=document.getElementById('cal'),mon=new Date(now);mon.setDate(now.getDate()-now.getDay()+1);
+const dw=['周一','周二','周三','周四','周五','周六','周日'],ev=[[{t:'晨会',c:'w'},{t:'网球',c:'h'}],[{t:'产品评审',c:'w'}],[{t:'深度工作',c:'w'},{t:'健身',c:'h'}],[{t:'团队1:1',c:'w'},{t:'网球',c:'h'}],[{t:'周报',c:'w'}],[{t:'网球赛',c:'h'},{t:'阅读',c:'p'}],[{t:'休息',c:'p'}]];
+const cc={w:'background:var(--al);color:var(--a)',h:'background:var(--gl);color:var(--g)',p:'background:var(--ol);color:var(--o)'};
+for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const td=d.toDateString()===now.toDateString();
+cal.innerHTML+=`<div style="border:1px solid ${td?'var(--a)':'var(--bl)'};border-radius:8px;padding:8px;min-height:100px;${td?'background:var(--al)':''}"><div style="font-size:10px;color:var(--t3);font-weight:600">${dw[i]}</div><div style="font-size:16px;font-weight:700;margin:4px 0">${d.getDate()}</div>${(ev[i]||[]).map(e=>`<div style="font-size:10px;padding:2px 5px;border-radius:3px;margin-bottom:3px;${cc[e.c]}">${e.t}</div>`).join('')}</div>`}
+// Focus
+let ti=null,tot=25*60,rem=tot,run=false;const ftm=document.getElementById('ftm'),fst=document.getElementById('fst'),fgo=document.getElementById('fgo');
+function ud(){ftm.textContent=String(Math.floor(rem/60)).padStart(2,'0')+':'+String(rem%60).padStart(2,'0')}
+fgo.onclick=()=>{if(run){clearInterval(ti);run=false;fgo.textContent='▶ 继续';fst.textContent='已暂停'}else{run=true;fgo.textContent='⏸ 暂停';fst.textContent='专注中...';ti=setInterval(()=>{if(rem<=0){clearInterval(ti);run=false;fst.textContent='🎉 完成！';fgo.textContent='▶ 开始';return}rem--;ud()},1000)}};
+document.getElementById('frs').onclick=()=>{clearInterval(ti);run=false;rem=tot;ud();fgo.textContent='▶ 开始';fst.textContent='准备专注'};
+document.querySelectorAll('.fc-p button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fc-p button').forEach(x=>x.classList.remove('on'));b.classList.add('on');tot=b.dataset.m*60;rem=tot;clearInterval(ti);run=false;ud();fgo.textContent='▶ 开始';fst.textContent='准备专注'});
+document.querySelectorAll('.fl-i').forEach(i=>i.onclick=()=>{document.querySelectorAll('.fl-i').forEach(x=>x.classList.remove('sel'));i.classList.add('sel');document.getElementById('ftk').textContent='当前任务：'+i.dataset.t});
+// Smart input
+const sinp=document.getElementById('sinp'),spb=document.getElementById('spb'),asg=document.getElementById('asg');
+spb.onclick=()=>{const t=sinp.value.trim();if(!t)return;spb.textContent='解析中...';spb.disabled=true;setTimeout(()=>{const tm=new Date();tm.setDate(tm.getDate()+1);let time='15:00',cat='工作';if(t.includes('下午'))time='14:00';if(t.includes('网球'))cat='健康';
+document.getElementById('asgc').innerHTML=`📋 <b>标题</b>：${t}<br>📅 <b>日期</b>：${tm.getMonth()+1}月${tm.getDate()}日<br>🕐 <b>时间</b>：${time}<br>🏷️ <b>类别</b>：${cat}<br><span style="color:var(--t3);font-size:11px">💡 AI 已检测时间冲突，该时段可用</span>`;
+asg.classList.add('show');spb.textContent='AI 解析';spb.disabled=false},800)};
+sinp.onkeydown=e=>{if(e.key==='Enter')spb.click()};
+document.getElementById('asgok').onclick=()=>{asg.classList.remove('show');sinp.value='';const t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--t1);color:var(--bg);padding:10px 20px;border-radius:8px;font-size:13px;z-index:300';t.textContent='✓ 日程已添加';document.body.appendChild(t);setTimeout(()=>t.remove(),2000)};
+document.getElementById('asgno').onclick=()=>asg.classList.remove('show');
+// Theme
+if(localStorage.getItem('fd-t')==='dark')document.documentElement.setAttribute('data-theme','dark');
+document.getElementById('tt').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement[d?'removeAttribute':'setAttribute']('data-theme',d?undefined:'dark');localStorage.setItem('fd-t',d?'light':'dark')};
+document.getElementById('mt').onclick=()=>document.getElementById('sb').classList.toggle('open');
+</script></body></html>
